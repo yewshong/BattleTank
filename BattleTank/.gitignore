@@ -1,3 +1,6 @@
+#visual studio files
+*.VC.db
+
 # Compiled Object files
 *.slo
 *.lo
