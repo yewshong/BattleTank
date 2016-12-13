@@ -25,4 +25,11 @@ public:
 
 	bool GetSightRayHitLocation(FVector& HitLocation) const;
 	bool MyGetSightRayHitLocation(FVector & HitLocation);
+	bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector LookDirection) const;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float CrosshairXLocation = 0.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float CrosshairYLocation = 0.33333f;
 };
