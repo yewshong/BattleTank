@@ -16,7 +16,61 @@ void ATankPlayerController::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("PlayerController possessing: %s"), *ControlledTank->GetName());
 }
 
+void ATankPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	AimTowardsCrosshair();
+	//UE_LOG(LogTemp, Warning, TEXT("PlyerController ticked"));
+}
+
 ATank* ATankPlayerController::GetControlledTank() const
 {
-	return Cast<ATank>(GetPawn());
+	auto pawn = GetPawn();
+	if (pawn)
+		return Cast<ATank>(GetPawn());
+	else
+		return nullptr;
+}
+
+void ATankPlayerController::AimTowardsCrosshair()
+{
+
+	if (!GetControlledTank()) { return; }
+	FVector HitLocation;//out parameter
+	
+	if(GetSightRayHitLocation(HitLocation))
+		UE_LOG(LogTemp, Warning, TEXT("Hit Location : %s"), *HitLocation.ToString());
+}
+
+
+bool  ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
+{
+	return false;
+}
+
+bool  ATankPlayerController::MyGetSightRayHitLocation(FVector & HitLocation)
+{
+	FHitResult hitResult;
+	FVector playerTankPosition = GetPawn()->GetActorLocation();
+	UE_LOG(LogTemp, Warning, TEXT("playerTankPosition : %s"), *playerTankPosition.ToString());
+	FVector End;// = playerTankPosition + (GetPawn()->GetActorRotation().Vector.Normalize() * 5000);
+
+	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+	RV_TraceParams.bTraceComplex = true;
+	RV_TraceParams.bTraceAsyncScene = true;
+	RV_TraceParams.bReturnPhysicalMaterial = false;
+
+	//Re-initialize hit info
+	FHitResult RV_Hit(ForceInit);
+
+
+	GetWorld()->LineTraceSingleByObjectType(hitResult, playerTankPosition, End, ECC_WorldStatic, RV_TraceParams);
+
+	HitLocation = hitResult.ImpactPoint;
+	if (hitResult.bBlockingHit)
+	{
+		return true;
+	}
+	return false;
 }

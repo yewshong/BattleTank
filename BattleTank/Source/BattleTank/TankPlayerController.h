@@ -17,4 +17,12 @@ public:
 	ATank*  GetControlledTank() const;
 
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+
+	//adjust the barrel based on crosshair position
+	void AimTowardsCrosshair();
+
+	bool GetSightRayHitLocation(FVector& HitLocation) const;
+	bool MyGetSightRayHitLocation(FVector & HitLocation);
 };
