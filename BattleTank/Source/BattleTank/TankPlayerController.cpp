@@ -21,7 +21,6 @@ void ATankPlayerController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	AimTowardsCrosshair();
-	//UE_LOG(LogTemp, Warning, TEXT("PlyerController ticked"));
 }
 
 ATank* ATankPlayerController::GetControlledTank() const
@@ -53,17 +52,39 @@ bool  ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	FVector LookDirection;
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("World Direction : %s"), *LookDirection.ToString());
+		if (GetLookVectorHitLocation(LookDirection, HitLocation))
+			return true;
 	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("Look direction not found "));
 	
 	return false;
 }
 
-bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector LookDirection) const
+bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector&LookDirection) const
 {
 	FVector CameraWorldLocation;
 	this->DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, LookDirection);
 	return true;
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation(FVector& lookDirection, FVector& HitLocation) const
+{
+	FHitResult HitResult;
+	FVector StartLocation = PlayerCameraManager->GetCameraLocation();
+	FVector EndLocation = StartLocation + (lookDirection * LineTraceRange);
+	
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility))//HitResult.bBlockingHit)
+	{
+		HitLocation = HitResult.ImpactPoint;
+		UE_LOG(LogTemp, Warning, TEXT("Hit Actor : %s"), *HitResult.GetActor()->GetName());
+		return true;
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("Nothing is hit "));
+
+	return false;
 }
 
 bool  ATankPlayerController::MyGetSightRayHitLocation(FVector & HitLocation)

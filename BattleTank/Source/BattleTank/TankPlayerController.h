@@ -25,11 +25,15 @@ public:
 
 	bool GetSightRayHitLocation(FVector& HitLocation) const;
 	bool MyGetSightRayHitLocation(FVector & HitLocation);
-	bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector LookDirection) const;
+	bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector&LookDirection) const;
+	bool GetLookVectorHitLocation(FVector& lookDirection, FVector& HitLocation) const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float CrosshairXLocation = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float CrosshairYLocation = 0.33333f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float LineTraceRange = 1000000;
 };
