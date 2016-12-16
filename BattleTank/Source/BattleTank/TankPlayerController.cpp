@@ -38,8 +38,10 @@ void ATankPlayerController::AimTowardsCrosshair()
 	if (!GetControlledTank()) { return; }
 	FVector HitLocation;//out parameter
 	
-	if(GetSightRayHitLocation(HitLocation))
-		UE_LOG(LogTemp, Warning, TEXT("Hit Location : %s"), *HitLocation.ToString());
+	if (GetSightRayHitLocation(HitLocation))
+	{
+		GetControlledTank()->AimAt(HitLocation);
+	}
 }
 
 
@@ -78,11 +80,8 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector& lookDirection, FVe
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility))//HitResult.bBlockingHit)
 	{
 		HitLocation = HitResult.ImpactPoint;
-		UE_LOG(LogTemp, Warning, TEXT("Hit Actor : %s"), *HitResult.GetActor()->GetName());
 		return true;
 	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("Nothing is hit "));
 
 	return false;
 }
