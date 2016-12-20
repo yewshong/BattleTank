@@ -34,8 +34,11 @@ void UTankAimingComponent::AimAt(FVector WorldSpaceAim, float LaunchSpeed)
 	if (UGameplayStatics::SuggestProjectileVelocity(this,
 		OutLaunchVelocity,
 		StartLocation,
-		WorldSpaceAim, 
+		WorldSpaceAim,
 		LaunchSpeed,
+		false,
+		0,
+		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace))
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
@@ -43,6 +46,8 @@ void UTankAimingComponent::AimAt(FVector WorldSpaceAim, float LaunchSpeed)
 		//UE_LOG(LogTemp, Warning, TEXT("%s Aiming at %s"), *TankName,*AimDirection.ToString());
 		MoveBarrelTowards(AimDirection);
 	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("No aim solution found"));
 }
 
 
@@ -55,6 +60,6 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotation;
 
-	Barrel->Elevate(5);
+	Barrel->Elevate(DeltaRotator.Pitch);
 }
 
